@@ -37,4 +37,4 @@ RUN sed -i '/^cors.enabled/d' /opt/activiti/tomcat/lib/activiti-app.properties &
 #         \"/opt/activiti/\", \\
 #       ]
 
-CMD /host/scripts/start.sh
+CMD /host/scripts/init.sh
