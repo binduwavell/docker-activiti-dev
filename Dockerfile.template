@@ -1,0 +1,40 @@
+FROM ubuntu:14.04.5
+
+RUN apt-get update && apt-get install -y \\
+    curl \\
+    unzip \\
+    wget \\
+    zip \\
+ && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 8000 8080 8082 9092
+
+RUN useradd -ms /bin/bash activiti && \\
+    usermod -aG sudo activiti && \\
+    echo "activiti:activiti" | chpasswd && \\
+    mkdir -p /opt/activiti && \\
+    chown activiti:activiti /opt/activiti
+USER activiti
+WORKDIR /home/activiti
+
+ENV ACT_VERSION ${ACT_VERSION}
+ENV ACT_BIN ${ACT_BIN}
+ENV ACT_URL ${ACT_URL}
+
+RUN wget -P /tmp ${ACT_URL} && \\
+    chmod 755 /tmp/${ACT_BIN} && \\
+    /tmp/${ACT_BIN} --mode unattended --prefix /opt/activiti && \\
+    mv /opt/activiti/tomcat/webapps/activiti-admin.war.undeployed /opt/activiti/tomcat/webapps/activiti-admin.war && \\
+    rm /tmp/${ACT_BIN}
+
+# Enable CORS access to Activiti
+RUN sed -i '/^cors.enabled/d' /opt/activiti/tomcat/lib/activiti-app.properties && \\
+    sed -i '\$ acors.enabled=true' /opt/activiti/tomcat/lib/activiti-app.properties && \\
+    sed -i '/^security.csrf.disabled/d' /opt/activiti/tomcat/lib/activiti-app.properties && \\
+    sed -i '\$ asecurity.csrf.disabled=true' /opt/activiti/tomcat/lib/activiti-app.properties
+
+#VOLUME [ \\
+#         \"/opt/activiti/\", \\
+#       ]
+
+CMD /host/scripts/start.sh
