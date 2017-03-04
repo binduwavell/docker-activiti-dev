@@ -6,4 +6,5 @@ docker run -it \
            -p 9999:8080 \
            -p 8082:8082 \
            -v $(pwd)/host:/host \
+           --name activiti_$ACT_VERSION \
            activiti:$ACT_VERSION "$@"
