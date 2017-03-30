@@ -28,6 +28,10 @@ docker> # Inside the container we need to start Activiti
 docker> /host/scripts/start.sh
 ```
 
+## Alfresco has an official image for this now
+
+See the docs here: http://docs.alfresco.com/process-services1.6/concepts/ps_installing_docker.html
+
 ## TODO
 
 - Use something like confd to provide a convenient way of updating 
